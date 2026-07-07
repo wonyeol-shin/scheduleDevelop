@@ -68,10 +68,10 @@ Base URL : http://localhost:8080
 * Body : 
 ```JSON
 {
-  "usertId" : "1"
+  "id" : "1"
   "userName" : "타대오",
   "email" : "Thaddaeus@glory.com",
-  "createdAt" : "2026-06-02",
+  "createdDate" : "2026-06-02",
   "modifiedDate" : "2026-06-02"
 }     
 ```
