@@ -189,6 +189,7 @@ Base URL : http://localhost:8080
 * Status Code : `204`
 * Comment : 로그아웃 성공
 
+---
 
 ### 📌 일정 조회(단건)
 
@@ -207,12 +208,12 @@ Base URL : http://localhost:8080
 * Body : 
 ```JSON
 {
-  "scheduleId" : 1,
+  "id" : 1,
   "userName" : "타대오",
   "scheduleName" : "타대오가 해야될 것1",
-  "contents" : "배드로 숑디와 탕후루 먹기",
-  "createdAt" : "2026-06-02",
-  "modifiedAt" : "2026-06-02"
+  "content" : "배드로 숑디와 탕후루 먹기",
+  "createdDate" : "2026-06-02",
+  "modifiedDate" : "2026-06-02"
 }
 ```
 
@@ -233,16 +234,16 @@ Base URL : http://localhost:8080
 ```JSON
 [
  {
-  "scheduleId" : 1,
+  "id" : 1,
   "userName" : "타대오",
   "scheduleName" : "타대오가 해야될 것1",
-  "modifiedAt" : "2026-06-02"
+  "modifiedDate" : "2026-06-02"
  },
  {
-  "scheduleId" : 7,
+  "id" : 7,
   "userName" : "타대오",
   "scheduleName" : "타대오가 해야될 것2",
-  "modifiedAt" : "2026-06-02"
+  "modifiedDate" : "2026-06-02"
  }
 ]
 ```
@@ -269,12 +270,12 @@ Base URL : http://localhost:8080
 * Body : 
 ```JSON
 {
-  "scheduleId" : 1,
+  "id" : 1,
   "userName" : "타대오",
   "scheduleName" : "타대오가 해야될 것1",
-  "contents" : "배드로 숑디와 탕후루 먹기",
-  "createdAt" : "2026-06-02",
-  "modifiedAt" : "2026-06-02"
+  "content" : "배드로 숑디와 탕후루 먹기",
+  "createdDate" : "2026-06-02",
+  "modifiedDate" : "2026-06-02"
 }
 ```
 
@@ -294,7 +295,7 @@ Base URL : http://localhost:8080
 ```JSON
 {
   "scheduleName" : "타태오가 해야될 것3",
-  "contents" : "배드로와 훈련하기"
+  "content" : "배드로와 훈련하기"
 }
 ```
 

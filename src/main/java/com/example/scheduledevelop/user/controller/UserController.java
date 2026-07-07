@@ -4,7 +4,6 @@ import com.example.scheduledevelop.user.dto.*;
 import com.example.scheduledevelop.user.dto.login.LoginUserForSession;
 import com.example.scheduledevelop.user.dto.login.LoginUserRequest;
 import com.example.scheduledevelop.user.dto.login.UserSession;
-import com.example.scheduledevelop.user.entity.User;
 import com.example.scheduledevelop.user.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -61,7 +60,7 @@ public class UserController {
 
     // 유저 조회(단건)
     @GetMapping("/users/{userId}")
-    public ResponseEntity<GetUserResponse> getOne(
+    public ResponseEntity<GetOneUserResponse> getOne(
             @PathVariable Long userId
     ) {
 

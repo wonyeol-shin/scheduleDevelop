@@ -23,6 +23,12 @@ public class Schedule extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
+    public Schedule(String scheduleName, String content, User user) {
+        this.scheduleName = scheduleName;
+        this.content = content;
+        this.user = user;
+    }
+
     public void updateSchedule(String scheduleName, String content) {
         this.scheduleName = scheduleName;
         this.content = content;

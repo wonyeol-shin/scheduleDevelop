@@ -3,7 +3,6 @@ package com.example.scheduledevelop.user.service;
 import com.example.scheduledevelop.user.dto.*;
 import com.example.scheduledevelop.user.dto.login.LoginUserForSession;
 import com.example.scheduledevelop.user.dto.login.LoginUserRequest;
-import com.example.scheduledevelop.user.dto.login.UserSession;
 import com.example.scheduledevelop.user.entity.User;
 import com.example.scheduledevelop.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -49,12 +48,12 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public GetUserResponse getOneUser(Long userId) {
+    public GetOneUserResponse getOneUser(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new IllegalStateException("없는 유저")
         );
 
-        return new GetUserResponse(
+        return new GetOneUserResponse(
                 user.getId(),
                 user.getUserName(),
                 user.getEmail(),
