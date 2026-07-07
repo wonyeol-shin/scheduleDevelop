@@ -8,6 +8,7 @@ import com.example.scheduledevelop.user.dto.login.LoginUserRequest;
 import com.example.scheduledevelop.user.entity.User;
 import com.example.scheduledevelop.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,12 +18,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     public CreateUserResponse createUser(CreateUserRequest request) {
         User savedUser = userRepository.save( new User(
-                request.getUserName(), request.getEmail(), request.getPassword()));
-
+                request.getUserName(), request.getEmail(), passwordEncoder.encode(request.getPassword())));
         return new CreateUserResponse(
                 savedUser.getId(),
                 savedUser.getUserName(),
@@ -34,10 +35,15 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public LoginUserForSession userLogin(LoginUserRequest request) {
-       User user = userRepository.findByEmailAndPassword(
-               request.getEmail(), request.getPassword()).orElseThrow(
-               () -> new LoginFailureException("email 또는 password가 틀렸습니다.")
-       );
+        // 보안상 이메일만 틀렸다고 알려주지 않음
+        User user = userRepository.findByEmail(request.getEmail()).orElseThrow(
+                () -> new LoginFailureException("email 또는 password가 틀렸습니다.")
+        );
+
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())){
+            throw new LoginFailureException("email 또는 password가 틀렸습니다.");
+        }
+
         return new LoginUserForSession(user.getId(), user.getUserName());
     }
 
