@@ -4,6 +4,7 @@ import com.example.scheduledevelop.schedule.dto.*;
 import com.example.scheduledevelop.schedule.service.ScheduleService;
 import com.example.scheduledevelop.user.dto.login.UserSession;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +20,7 @@ public class ScheduleController {
     // 일정 생성
     @PostMapping("/schedules")
     public ResponseEntity<CreateScheduleResponse> create(
-            @RequestBody CreateScheduleRequest request,
+            @Valid @RequestBody CreateScheduleRequest request,
             @SessionAttribute(name = "userLogin", required = false) UserSession userSession
     ) {
         if (isInvalidUser(userSession)) {
@@ -48,7 +49,7 @@ public class ScheduleController {
     @PatchMapping("/schedules/{scheduleId}")
     public ResponseEntity<Void> update(
              @PathVariable Long scheduleId,
-             @RequestBody UpdateScheduleRequest request,
+             @Valid @RequestBody UpdateScheduleRequest request,
              @SessionAttribute(name = "userLogin", required = false) UserSession userSession
     ) {
         if (isInvalidUser(userSession)) {

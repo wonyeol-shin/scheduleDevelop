@@ -1,5 +1,7 @@
 package com.example.scheduledevelop.user.service;
 
+import com.example.scheduledevelop.common.exception.LoginFailureException;
+import com.example.scheduledevelop.common.exception.WithoutUserException;
 import com.example.scheduledevelop.user.dto.*;
 import com.example.scheduledevelop.user.dto.login.LoginUserForSession;
 import com.example.scheduledevelop.user.dto.login.LoginUserRequest;
@@ -34,7 +36,7 @@ public class UserService {
     public LoginUserForSession userLogin(LoginUserRequest request) {
        User user = userRepository.findByEmailAndPassword(
                request.getEmail(), request.getPassword()).orElseThrow(
-               () -> new IllegalStateException("없는 유저")
+               () -> new LoginFailureException("email 또는 password가 틀렸습니다.")
        );
         return new LoginUserForSession(user.getId(), user.getUserName());
     }
@@ -50,7 +52,7 @@ public class UserService {
     @Transactional(readOnly = true)
     public GetOneUserResponse getOneUser(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(
-                () -> new IllegalStateException("없는 유저")
+                () -> new WithoutUserException("존재하지 않는 유저입니다.")
         );
 
         return new GetOneUserResponse(
@@ -66,7 +68,7 @@ public class UserService {
     @Transactional
     public void updateUser(UpdateUserRequest request, Long userId) {
         User user = userRepository.findById(userId).orElseThrow(
-                () -> new IllegalStateException("없는 유저")
+                () -> new WithoutUserException("존재하지 않는 유저입니다.")
         );
 
         user.updateUser(request.getUserName(), request.getEmail(), request.getPassword());
@@ -77,7 +79,7 @@ public class UserService {
         boolean existence = userRepository.existsById(userId);
 
         if (!existence){
-            throw new IllegalStateException("없는 유저");
+            throw new WithoutUserException("존재하지 않는 유저입니다.");
         }
 
         userRepository.deleteById(userId);

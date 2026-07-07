@@ -1,5 +1,8 @@
 package com.example.scheduledevelop.schedule.service;
 
+import com.example.scheduledevelop.common.exception.IdIsDifferentException;
+import com.example.scheduledevelop.common.exception.WithoutScheduleException;
+import com.example.scheduledevelop.common.exception.WithoutUserException;
 import com.example.scheduledevelop.schedule.dto.*;
 import com.example.scheduledevelop.schedule.entity.Schedule;
 import com.example.scheduledevelop.schedule.repository.ScheduleRepository;
@@ -63,7 +66,7 @@ public class ScheduleService {
         Schedule schedule = findSchedule(scheduleId);
         // 로그인한 user ID와 일정에 저장된 user ID가 일치하는지 한번 더 검증
         if (!(Objects.equals(schedule.getUser().getId(), userId)) ){
-            throw new IllegalStateException("수정이 불가능한 일정");
+            throw new IdIsDifferentException("수정이 불가능한 일정");
         }
 
         schedule.updateSchedule(request.getScheduleName(), request.getContent());
@@ -77,13 +80,13 @@ public class ScheduleService {
 
     private Schedule findSchedule(Long id) {
         return scheduleRepository.findById(id).orElseThrow(
-                () -> new IllegalStateException("없는 일정")
+                () -> new WithoutScheduleException("없는 일정입니다.")
         );
     }
 
     private User findUser(Long id) {
         return userRepository.findById(id).orElseThrow(
-                () -> new IllegalStateException("없는 유저")
+                () -> new WithoutUserException("인증값이 유효하지 않습니다. 다시 로그인 바랍니다.")
         );
     }
 

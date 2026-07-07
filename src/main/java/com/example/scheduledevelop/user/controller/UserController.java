@@ -6,6 +6,7 @@ import com.example.scheduledevelop.user.dto.login.LoginUserRequest;
 import com.example.scheduledevelop.user.dto.login.UserSession;
 import com.example.scheduledevelop.user.service.UserService;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +22,7 @@ public class UserController {
     // 회원가입
     @PostMapping("/signup")
     public ResponseEntity<CreateUserResponse> signup(
-            @RequestBody CreateUserRequest request
+           @Valid @RequestBody CreateUserRequest request
     ) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(userService.createUser(request));
@@ -30,7 +31,7 @@ public class UserController {
     // 로그인
     @PostMapping("/login")
     public ResponseEntity<Void> login(
-            @RequestBody LoginUserRequest request,
+            @Valid @RequestBody LoginUserRequest request,
             HttpSession session
     ) {
         LoginUserForSession user = userService.userLogin(request);
@@ -70,7 +71,7 @@ public class UserController {
     // 유저 수정
     @PostMapping("/users")
     public ResponseEntity<Void> update(
-            @RequestBody UpdateUserRequest request,
+            @Valid @RequestBody UpdateUserRequest request,
             @SessionAttribute(name = "userLogin", required = false) UserSession userSession,
             HttpSession session
     ) {
