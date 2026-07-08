@@ -10,7 +10,7 @@ https://www.erdcloud.com/p/cZyBMsNcMkK7JuvGp
 
 ```SQL
 CREATE TABLE `schedulr` (
-	`id`	bigint	NOT NULL AUTO_INCREMENT,
+	`id`	bigint	NOT NULL,
 	`user_id`	bigint	NULL,
 	`schedule_name`	varchar(50)	NOT NULL,
 	`content`	varchar(512)	NOT NULL,
@@ -19,11 +19,20 @@ CREATE TABLE `schedulr` (
 );
 
 CREATE TABLE `user` (
-	`id`	bigint	NOT NULL AUTO_INCREMENT,
+	`id`	bigint	NOT NULL,
 	`user_name`	varchar(20)	NOT NULL,
 	`email`	varchar(50)	NOT NULL,
 	`password`	varchar(50)	NOT NULL,
 	`createdDate`	datetime	NOT NULL,
+	`modifiedDate`	datetime	NOT NULL
+);
+
+CREATE TABLE `comment` (
+	`id`	bigint	NOT NULL,
+	`schedule_id`	bigint	NULL,
+	`user_id`	bigint	NULL,
+	`comment`	varchar(50)	NOT NULL,
+	`created_date`	datetime	NOT NULL,
 	`modifiedDate`	datetime	NOT NULL
 );
 
@@ -32,6 +41,10 @@ ALTER TABLE `schedulr` ADD CONSTRAINT `PK_SCHEDULR` PRIMARY KEY (
 );
 
 ALTER TABLE `user` ADD CONSTRAINT `PK_USER` PRIMARY KEY (
+	`id`
+);
+
+ALTER TABLE `comment` ADD CONSTRAINT `PK_COMMENT` PRIMARY KEY (
 	`id`
 );
 
@@ -331,3 +344,158 @@ Base URL : http://localhost:8080
 * Status Code : `404`
 * Comment : 없는 일정
 
+---
+
+### 📌 댓글 생성
+
+**Request - 요청**
+* Method : `POST`
+* URL : `/schedules/{scheduleId}/comments`
+
+| 속성 | 타입 | 필수 | 설명 |
+|---|---|---|---|
+| scheduleId | long | yes | 원하는 일정에 댓글달기 |
+
+* Request Header `Cookie: JSESSIONID=세션ID`
+
+* Body :
+```JSON
+{
+  "comment" : "역시 스승님 대단하십니다."
+}
+```
+
+**Response - 응답**
+* Status Code : `201`
+* Comment : 댓글 생성 완료
+* Response Body : `application/json`
+* Body :
+```JSON
+{
+  "id" : 1,
+  "comment" : "역시 스승님 대단하십니다.",
+  "createdDate" : "2026-06-02",
+  "modifiedDate" : "2026-06-02"
+}
+```
+
+* Status Code : `401`
+* Comment : 권한이 없음
+
+* Status Code : `404`
+* Comment : 없는 일정
+
+### 📌 댓글 조회(단건)
+
+**Request - 요청**
+* Method : `GET`
+* URL : `/schedules/{scheduleId}/comments`
+
+| 속성 | 타입 | 필수 | 설명 |
+|---|---|---|---|
+| scheduleId | long | yes | 원하는 일정에 있는 댓글확인 |
+
+
+**Response - 응답**
+* Status Code : `201`
+* Comment : 댓글 조회 완료
+* Response Body : `application/json`
+
+* Body :
+```JSON
+[
+  { 
+    "id" : 1,
+    "comment" : "역시 스승님 대단하십니다.",
+    "commenters" : "카케오",
+    "modifiedDate" : "2026-06-02"
+  },
+  { 
+    "id" : 2,
+    "comment" : "이번만 협조를 하는겁니다 순구씨",
+    "commenters" : "나다니엘",
+    "modifiedDate" : "2026-06-02"
+  },   
+]
+```
+
+* Status Code : `404`
+* Comment : 없는 일정
+
+### 📌 댓글 조회(단건)
+
+**Request - 요청**
+* Method : `GET`
+* URL : `/schedules/comments/{commentId}`
+
+| 속성 | 타입 | 필수 | 설명 |
+|---|---|---|---|
+| commentId | long | yes | 원하는 댓글확인 |
+
+
+**Response - 응답**
+* Status Code : `201`
+* Comment : 댓글 조회 완료
+* Response Body : `application/json`
+
+* Body :
+```JSON
+{ 
+  "scheduleAuthor" : "시몬",
+  "scheduleName" : "검술훈련",
+  "content" : "검술훈련 다 끝냄",
+  "commenters" : "카케오",
+  "comment" : "역시 스승님 대단하십니다.",
+  "createdDate" : "2026-06-02",
+  "modifiedDate" : "2026-06-02"
+}
+```
+
+* Status Code : `404`
+* Comment : 없는 일정
+
+### 📌 댓글 수정
+
+**Request - 요청**
+* Method : `POST`
+* URL : `/schedules/comments/{commentId}`
+
+| 속성 | 타입 | 필수 | 설명 |
+|---|---|---|---|
+| commentId | long | yes | 원하는 댓글수정 |
+
+* Request Header `Cookie: JSESSIONID=세션ID`
+
+* Body :
+```JSON
+{
+  "comment" : "재미있습니다 사숙"
+}
+```
+
+**Response - 응답**
+* Status Code : `200`
+* Comment : 댓글 수정 완료
+
+* Status Code : `404`
+* Comment : 없는 일정
+
+### 📌 댓글 삭제
+  
+**Request - 요청**
+* Method : `DELETE`
+* URL : `/schedules/comments/{commentId}`
+
+| 속성 | 타입 | 필수 | 설명 |
+|---|---|---|---|
+| commentId | long | yes | 원하는 댓글수정 |
+
+* Request Header `Cookie: JSESSIONID=세션ID`
+
+
+**Response - 응답**
+* Status Code : `204`
+* Comment : 댓글 삭제 완료
+
+* Status Code : `404`
+* Comment : 없는 일정
