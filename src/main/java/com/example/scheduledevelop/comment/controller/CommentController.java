@@ -25,6 +25,11 @@ public class CommentController {
             @SessionAttribute(name = "userLogin", required = false) UserSession userSession
 
     ) {
+
+        if (userSession == null) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(commentService.createComment(scheduleId, userSession.getId(), request));
     }
@@ -52,6 +57,12 @@ public class CommentController {
             @Valid @RequestBody UpdateCommentRequest request,
             @SessionAttribute(name = "userLogin", required = false) UserSession userSession
             ) {
+
+        if (userSession == null) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+
         commentService.updateComment(commentId, request, userSession.getId());
         return ResponseEntity.status(HttpStatus.OK).build();
     }
@@ -62,6 +73,11 @@ public class CommentController {
             @PathVariable Long commentId,
             @SessionAttribute(name = "userLogin", required = false) UserSession userSession
     ) {
+
+        if (userSession == null) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
         commentService.deleteComment(commentId, userSession.getId());
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
