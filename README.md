@@ -1,5 +1,5 @@
 # schedule-delvelop (일정 관리 과제)
-
+- 도전과제 완료
 ---
 ## ERD
 
@@ -9,7 +9,7 @@ https://www.erdcloud.com/p/cZyBMsNcMkK7JuvGp
 **SQL쿼리** 
 
 ```SQL
-CREATE TABLE `schedulr` (
+CREATE TABLE `schedule` (
 	`id`	bigint	NOT NULL,
 	`user_id`	bigint	NULL,
 	`schedule_name`	varchar(50)	NOT NULL,
@@ -139,7 +139,7 @@ Base URL : http://localhost:8080
 ```
 
 * Status Code : `404`
-* Comment : 없는 일정 검색
+* Comment : 없는 사용자 검색
 
 ### 📌 사용자 수정
 
@@ -147,6 +147,7 @@ Base URL : http://localhost:8080
 * Method : `PATCH`
 * URL : `/users`
 * Request Header `Cookie: JSESSIONID=세션ID`
+* comment : 사용자 정보 수정 후 로그인이 필요합니다.
 
 * Body :
 ```JSON
@@ -161,6 +162,13 @@ Base URL : http://localhost:8080
 * Status Code : `200`
 * Comment : 수정 성공
 
+* Status Code : `401`
+* Comment : 로그인 하지 않음, 수정 권한이 없음
+
+* Status Code : `404`
+* Comment : 존재하지 않는 사용자 수정시도
+
+
 ### 📌 사용자 삭제
 
 **Request - 요청**
@@ -172,6 +180,12 @@ Base URL : http://localhost:8080
 * Status Code : `204`
 * Comment : 삭제 성공
 
+* Status Code : `401`
+* Comment : 로그인 하지 않음, 삭제 권한이 없음
+
+* Status Code : `404`
+* Comment : 존재하지 않는 사용자 삭제시도
+* 
 ### 📌 사용자 로그인
 
 **Request - 요청**
@@ -201,6 +215,9 @@ Base URL : http://localhost:8080
 **Response - 응답**
 * Status Code : `204`
 * Comment : 로그아웃 성공
+
+* Status Code : `400`
+* Comment : 로그인을 하지 않고 로그아웃 요청
 
 ---
 
@@ -238,6 +255,13 @@ Base URL : http://localhost:8080
 **Request - 요청**
 * Method : `GET`
 * URL : `/schedules`
+* Query Param
+
+| 속성 | 타입 | 필수 | 설명 |
+|---|---|---|---|
+| page | long | no | 페이지번호 | 
+|---|---|---|---|
+| size | long | no | 데이터 개수 | 
 
 **Response - 응답**
 * Status Code : `200`
@@ -245,20 +269,70 @@ Base URL : http://localhost:8080
 * Response Body : `application/json`
 * Body : 
 ```JSON
-[
- {
-  "id" : 1,
-  "userName" : "타대오",
-  "scheduleName" : "타대오가 해야될 것1",
-  "modifiedDate" : "2026-06-02"
- },
- {
-  "id" : 7,
-  "userName" : "타대오",
-  "scheduleName" : "타대오가 해야될 것2",
-  "modifiedDate" : "2026-06-02"
- }
-]
+{
+    "content": [
+        {
+            "scheduleName": "연구해야될것",
+            "scheduleContent": "유전자 검사",
+            "commentCount": 0,
+            "createdDate": "2026-07-08T14:22:18.400131",
+            "modifiedDate": "2026-07-08T14:22:18.400131"
+        },
+        {
+            "scheduleName": "연구해야될것",
+            "scheduleContent": "유전자 검사",
+            "commentCount": 0,
+            "createdDate": "2026-07-08T14:22:18.039413",
+            "modifiedDate": "2026-07-08T14:22:18.039413"
+        },
+        {
+            "scheduleName": "연구해야될것",
+            "scheduleContent": "유전자 검사",
+            "commentCount": 0,
+            "createdDate": "2026-07-08T14:22:17.698",
+            "modifiedDate": "2026-07-08T14:22:17.698"
+        },
+        {
+            "scheduleName": "연구해야될것",
+            "scheduleContent": "유전자 검사",
+            "commentCount": 0,
+            "createdDate": "2026-07-08T14:22:17.32345",
+            "modifiedDate": "2026-07-08T14:22:17.32345"
+        },
+        {
+            "scheduleName": "연구해야될것",
+            "scheduleContent": "유전자 검사",
+            "commentCount": 0,
+            "createdDate": "2026-07-08T14:22:16.956619",
+            "modifiedDate": "2026-07-08T14:22:16.956619"
+        }
+    ],
+    "empty": false,
+    "first": false,
+    "last": false,
+    "number": 1,
+    "numberOfElements": 5,
+    "pageable": {
+        "offset": 5,
+        "pageNumber": 1,
+        "pageSize": 5,
+        "paged": true,
+        "sort": {
+            "empty": false,
+            "sorted": true,
+            "unsorted": false
+        },
+        "unpaged": false
+    },
+    "size": 5,
+    "sort": {
+        "empty": false,
+        "sorted": true,
+        "unsorted": false
+    },
+    "totalElements": 22,
+    "totalPages": 5
+}
 ```
 
 ### 📌 일정 등록(생성)
@@ -292,6 +366,12 @@ Base URL : http://localhost:8080
 }
 ```
 
+* Status Code : `401`
+* Comment : 로그인 정보 없음
+
+* Status Code : `404`
+* Comment : 로그인 정보가 유효하지 않음(ID 없음)
+
 ### 📌 일정 수정
 
 **Request - 요청**
@@ -317,7 +397,7 @@ Base URL : http://localhost:8080
 * Comment : 일정 수정 성공
 
 * Status Code : `401`
-* Comment : 권한이 없음
+* Comment : 로그인을 하지 않음, 수정 권한이 없음
 
 * Status Code : `404`
 * Comment : 없는 일정
@@ -339,7 +419,7 @@ Base URL : http://localhost:8080
 * Comment : 일정 삭제 성공
 
 * Status Code : `401`
-* Comment : 권한이 없음
+* Comment : 로그인을 하지 않음, 삭제 권한이 없음
 
 * Status Code : `404`
 * Comment : 없는 일정
@@ -380,7 +460,7 @@ Base URL : http://localhost:8080
 ```
 
 * Status Code : `401`
-* Comment : 권한이 없음
+* Comment : 로그인을 하지 않음
 
 * Status Code : `404`
 * Comment : 없는 일정
@@ -418,6 +498,8 @@ Base URL : http://localhost:8080
   },   
 ]
 ```
+* Status Code : `401`
+* Comment : 로그인 하지 않음, 수정 할 권한 없음
 
 * Status Code : `404`
 * Comment : 없는 일정
@@ -452,7 +534,7 @@ Base URL : http://localhost:8080
 ```
 
 * Status Code : `404`
-* Comment : 없는 일정
+* Comment : 없는 일정, 없는 댓글ID
 
 ### 📌 댓글 수정
 
@@ -477,8 +559,11 @@ Base URL : http://localhost:8080
 * Status Code : `200`
 * Comment : 댓글 수정 완료
 
+* Status Code : `401`
+* Comment : 로그인 하지 않음, 수정 권한 없음
+
 * Status Code : `404`
-* Comment : 없는 일정
+* Comment : 없는 일정, 없는 댓글
 
 ### 📌 댓글 삭제
   
@@ -497,5 +582,8 @@ Base URL : http://localhost:8080
 * Status Code : `204`
 * Comment : 댓글 삭제 완료
 
+* Status Code : `401`
+* Comment : 로그인 하지 않음, 수정 권한 없음
+
 * Status Code : `404`
-* Comment : 없는 일정
+* Comment : 없는 일정, 없는 댓글
