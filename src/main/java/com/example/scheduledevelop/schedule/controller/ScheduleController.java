@@ -3,14 +3,12 @@ package com.example.scheduledevelop.schedule.controller;
 import com.example.scheduledevelop.schedule.dto.*;
 import com.example.scheduledevelop.schedule.service.ScheduleService;
 import com.example.scheduledevelop.user.dto.login.UserSession;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,9 +30,19 @@ public class ScheduleController {
     }
 
     // 일정 조회(다건)
+//    @GetMapping("/schedules")
+//    public ResponseEntity<List<GetAllScheduleResponse>> getAll() {
+//        return ResponseEntity.status(HttpStatus.OK).body(scheduleService.getAllSchedule());
+//    }
+
+    // 일정 조회(다건 + 페이징)
     @GetMapping("/schedules")
-    public ResponseEntity<List<GetAllScheduleResponse>> getAll() {
-        return ResponseEntity.status(HttpStatus.OK).body(scheduleService.getAllSchedule());
+    public ResponseEntity<Page<PageableGetScheduleResponse>> getAll(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(scheduleService.getAllScheduleWithPaging(page, size));
     }
 
     //일정 조회(단건)

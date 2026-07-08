@@ -1,5 +1,6 @@
 package com.example.scheduledevelop.schedule.service;
 
+import com.example.scheduledevelop.comment.repository.CommentRepository;
 import com.example.scheduledevelop.common.exception.IdIsDifferentException;
 import com.example.scheduledevelop.common.exception.WithoutScheduleException;
 import com.example.scheduledevelop.common.exception.WithoutUserException;
@@ -9,10 +10,13 @@ import com.example.scheduledevelop.schedule.repository.ScheduleRepository;
 import com.example.scheduledevelop.user.entity.User;
 import com.example.scheduledevelop.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -20,6 +24,7 @@ import java.util.Objects;
 public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
     private final UserRepository userRepository;
+    private final CommentRepository commentRepository;
 
     @Transactional
     public CreateScheduleResponse createSchedule(
@@ -37,15 +42,32 @@ public class ScheduleService {
         );
     }
 
+//    @Transactional(readOnly = true)
+//    public List<GetAllScheduleResponse> getAllSchedule() {
+//       return scheduleRepository.findAll().stream()
+//                .map((schedule -> new GetAllScheduleResponse(
+//                        schedule.getId(),
+//                        schedule.getUser().getUserName(),
+//                        schedule.getScheduleName(),
+//                        schedule.getModifiedDate()
+//                ))).toList();
+//    }
+
     @Transactional(readOnly = true)
-    public List<GetAllScheduleResponse> getAllSchedule() {
-       return scheduleRepository.findAll().stream()
-                .map((schedule -> new GetAllScheduleResponse(
+    public Page<PageableGetScheduleResponse> getAllScheduleWithPaging(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("modifiedDate").descending());
+
+       return scheduleRepository.findAll(pageable).map(
+                (schedule -> new PageableGetScheduleResponse(
                         schedule.getId(),
-                        schedule.getUser().getUserName(),
                         schedule.getScheduleName(),
+                        schedule.getContent(),
+                        (long) commentRepository.findByScheduleId(schedule.getId()).size(),
+                        schedule.getCreateDate(),
                         schedule.getModifiedDate()
-                ))).toList();
+                ))
+        );
+
     }
 
     @Transactional(readOnly = true)
@@ -89,6 +111,7 @@ public class ScheduleService {
                 () -> new WithoutUserException("인증값이 유효하지 않습니다. 다시 로그인 바랍니다.")
         );
     }
+
 
 
 }
